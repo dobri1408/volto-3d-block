@@ -1,7 +1,7 @@
 {
-  "name": "@eeacms/volto-3d-block",
+  "name": "volto-3d-block",
   "version": "1.0.0",
-  "description": "@eeacms/volto-3d-block: Volto add-on to embed Videos from NextCloud",
+  "description": "volto-3d-block: Volto add-on to embed Videos from NextCloud",
   "main": "src/index.js",
   "author": "European Environment Agency: IDM2 A-Team",
   "license": "MIT",
@@ -23,7 +23,7 @@
     "@eeacms/volto-object-widget": "*",
     "@react-three/drei": "9.17.1",
     "@react-three/fiber": "8.0.27",
-    "pannellum-react": "*",
+    "react-pannellum": "*",
     "three": "0.139.2"
   },
   "devDependencies": {

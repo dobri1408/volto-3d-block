@@ -1,11 +1,22 @@
-import { FileWidget } from '@plone/volto/components';
+import AttachedFileWidget from '@eeacms/volto-object-widget/Widget/AttachedFileWidget';
 import loadable from '@loadable/component';
+import { SidebarPortal } from '@plone/volto/components';
+import { defineMessages, useIntl } from 'react-intl';
 
+import { BlockDataForm } from '@plone/volto/components';
+import schema from './schema';
 const ThreeDViewer = loadable(() => import('./View'));
 
-const ThreeDBlockEdit = (props) => {
-  const { data, onChangeBlock, block } = props;
+const messages = defineMessages({
+  '3d': {
+    id: '3d',
+    defaultMessage: '3D Block',
+  },
+});
 
+const ThreeDBlockEdit = (props) => {
+  const { data, onChangeBlock, block, selected } = props;
+  const intl = useIntl();
   const handleFileChange = (file) => {
     onChangeBlock(block, {
       ...data,
@@ -15,9 +26,24 @@ const ThreeDBlockEdit = (props) => {
 
   return (
     <div className="three-d-block-edit">
+      <SidebarPortal selected={selected}>
+        <BlockDataForm
+          schema={schema(intl)}
+          title={intl.formatMessage(messages['3d'])}
+          onChangeField={(id, value) => {
+            onChangeBlock(block, {
+              ...data,
+              [id]: value,
+            });
+          }}
+          onChangeBlock={onChangeBlock}
+          formData={data}
+          block={block}
+        />
+      </SidebarPortal>
       {data?.file ? (
         <div className="three-d-preview">
-          <ThreeDViewer file={data.file} />
+          <ThreeDViewer data={{ file: data.file }} />
           <button
             type="button"
             onClick={() => handleFileChange(null)}
@@ -27,12 +53,9 @@ const ThreeDBlockEdit = (props) => {
           </button>
         </div>
       ) : (
-        <FileWidget
-          id="stl-file"
-          title="Upload STL File"
-          value={data?.file || ''}
-          onChange={(id, value) => handleFileChange(value)}
-        />
+        <>
+          <p>Please select a 3d file</p>
+        </>
       )}
     </div>
   );

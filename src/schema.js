@@ -28,7 +28,7 @@ const ThreeDBlockSchema = (intl) => ({
     file: {
       title: intl.formatMessage(messages.fileField),
       description: intl.formatMessage(messages.description),
-      widget: 'file', // Widget for file upload
+      widget: 'attachedfile', // Widget for file upload
     },
   },
   required: ['file'],
