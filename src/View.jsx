@@ -1,7 +1,8 @@
 import React, { Suspense, useState, useEffect } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls, useGLTF } from '@react-three/drei';
-import { STLLoader } from 'three/examples/jsm/loaders/STLLoader';
+import { STLLoader } from 'three-stdlib';
+
 import ReactPannellum from 'react-pannellum';
 
 const STLViewer = ({ fileData }) => {
