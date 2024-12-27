@@ -1,0 +1,80 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Plone\n"
+"POT-Creation-Date: 2023-08-29T17:41:17.244Z\n"
+"Last-Translator: Plone i18n <plone-i18n@lists.sourceforge.net>\n"
+"Language-Team: Plone i18n <plone-i18n@lists.sourceforge.net>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"Language-Code: en\n"
+"Language-Name: English\n"
+"Preferred-Encodings: utf-8\n"
+"Domain: volto\n"
+
+#: NextCloud/schema
+# defaultMessage: Alignment
+msgid "Alignment"
+msgstr ""
+
+#: NextCloud/schema
+# defaultMessage: File
+msgid "File"
+msgstr ""
+
+#: NextCloud/schema
+# defaultMessage: Language
+msgid "Language"
+msgstr ""
+
+#: NextCloud/VideoSidebar
+# defaultMessage: No Video selected
+msgid "No Video selected"
+msgstr ""
+
+#: NextCloud/NextCloudVideoEdit
+# defaultMessage: Please enter a valid video URL, starting with: 
+msgid "Please enter a valid video URL, starting with: "
+msgstr ""
+
+#: NextCloud/schema
+# defaultMessage: Preview Image URL
+msgid "Preview Image URL"
+msgstr ""
+
+#: NextCloud/NextCloudVideoEdit
+# defaultMessage: Specify a NextCloud video or playlist url
+msgid "Specify a NextCloud video or playlist url"
+msgstr ""
+
+#: NextCloud/schema
+# defaultMessage: Title
+msgid "Title"
+msgstr ""
+
+#: NextCloud/schema
+#: NextCloud/VideoSidebar
+# defaultMessage: Video
+msgid "Video"
+msgstr ""
+
+#: NextCloud/schema
+# defaultMessage: Video Autoplay
+msgid "Video Autoplay"
+msgstr ""
+
+#: NextCloud/schema
+# defaultMessage: Video Loop
+msgid "Video Loop"
+msgstr ""
+
+#: NextCloud/schema
+# defaultMessage: Video URL
+msgid "Video URL"
+msgstr ""
+
+#: NextCloud/NextCloudVideoEdit
+# defaultMessage: Video URL (NextCloud)
+msgid "Video URL (NextCloud)"
+msgstr ""

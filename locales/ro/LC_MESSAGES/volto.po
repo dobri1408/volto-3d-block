@@ -1,0 +1,78 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: \n"
+"Language: \n"
+"Language-Team: \n"
+"Content-Type: \n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#: NextCloud/schema
+# defaultMessage: Alignment
+msgid "Alignment"
+msgstr ""
+
+#: NextCloud/schema
+# defaultMessage: File
+msgid "File"
+msgstr ""
+
+#: NextCloud/schema
+# defaultMessage: Language
+msgid "Language"
+msgstr ""
+
+#: NextCloud/VideoSidebar
+# defaultMessage: No Video selected
+msgid "No Video selected"
+msgstr ""
+
+#: NextCloud/NextCloudVideoEdit
+# defaultMessage: Please enter a valid video URL, starting with:
+msgid "Please enter a valid video URL, starting with: "
+msgstr ""
+
+#: NextCloud/schema
+# defaultMessage: Preview Image URL
+msgid "Preview Image URL"
+msgstr ""
+
+#: NextCloud/NextCloudVideoEdit
+# defaultMessage: Specify a NextCloud video or playlist url
+msgid "Specify a NextCloud video or playlist url"
+msgstr ""
+
+#: NextCloud/schema
+# defaultMessage: Title
+msgid "Title"
+msgstr ""
+
+#: NextCloud/schema
+#: NextCloud/VideoSidebar
+# defaultMessage: Video
+msgid "Video"
+msgstr ""
+
+#: NextCloud/schema
+# defaultMessage: Video Autoplay
+msgid "Video Autoplay"
+msgstr ""
+
+#: NextCloud/schema
+# defaultMessage: Video Loop
+msgid "Video Loop"
+msgstr ""
+
+#: NextCloud/schema
+# defaultMessage: Video URL
+msgid "Video URL"
+msgstr ""
+
+#: NextCloud/NextCloudVideoEdit
+# defaultMessage: Video URL (NextCloud)
+msgid "Video URL (NextCloud)"
+msgstr ""
