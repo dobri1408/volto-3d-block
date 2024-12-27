@@ -51,7 +51,6 @@ const View = (props) => {
   if (fileExtension === 'stl') {
     return (
       <Canvas
-        style={{ width: '100%', height: '500px' }}
         onCreated={({ gl }) => {
           gl.setSize(window.innerWidth, window.innerHeight);
           gl.forceContextRestore();

@@ -4,6 +4,7 @@ import schema from './schema';
 import videoSVG from '@plone/volto/icons/videocamera.svg';
 
 import { defineMessages, createIntlCache, createIntl } from 'react-intl';
+import './style.less';
 
 const messages = defineMessages({
   BlockTitle3D: {

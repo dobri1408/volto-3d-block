@@ -5,6 +5,7 @@ import { defineMessages, useIntl } from 'react-intl';
 
 import { BlockDataForm } from '@plone/volto/components';
 import schema from './schema';
+
 const ThreeDViewer = loadable(() => import('./View'));
 
 const messages = defineMessages({
