@@ -19,7 +19,7 @@ const STLViewer = ({ fileData }) => {
 
   return (
     <mesh geometry={geometry}>
-      <meshStandardMaterial color={0x00ff00} />
+      <meshStandardMaterial color={0x808080} />
     </mesh>
   );
 };
@@ -51,7 +51,8 @@ const View = (props) => {
   if (fileExtension === 'stl') {
     return (
       <Canvas
-        style={{ width: '100%', height: '500px' }}
+        camera={{ position: [0, 0, -100], fov: 50 }}
+        style={{ width: '100%' }}
         onCreated={({ gl }) => {
           gl.setSize(window.innerWidth, window.innerHeight);
           gl.forceContextRestore();
@@ -61,13 +62,18 @@ const View = (props) => {
           <ambientLight intensity={0.5} />
           <directionalLight position={[1, 1, 1]} intensity={0.7} />
           <STLViewer fileData={fileData} />
-          <OrbitControls />
+          <OrbitControls
+            enableDamping
+            dampingFactor={0.1}
+            rotateSpeed={0.1}
+            zoomSpeed={0.1}
+          />
         </Suspense>
       </Canvas>
     );
   } else if (['jpg', 'jpeg', 'png'].includes(fileExtension) && blobUrl) {
     return (
-      <div style={{ width: '100%', height: '500px' }}>
+      <div style={{ width: '100%' }}>
         <ReactPannellum
           id="panorama"
           sceneId="firstScene"
