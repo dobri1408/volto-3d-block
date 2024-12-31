@@ -7,11 +7,11 @@ const messages = defineMessages({
   },
   fileField: {
     id: '3DObjectBlock.fileField',
-    defaultMessage: 'STL File',
+    defaultMessage: '3D File',
   },
   description: {
     id: '3DObjectBlock.description',
-    defaultMessage: 'Upload an STL file to render a 3D object.',
+    defaultMessage: 'Upload an STL or 360 image file.',
   },
 });
 

@@ -1,3 +1,36 @@
 #panorama {
   width: 100% !important;
+  object-fit: cover !important;
+  object-position: center !important;
+}
+
+@media (max-width: 768px) {
+  .container360image {
+    padding: 5px;
+    width: 100%;
+    height: auto;
+    #panorama {
+      object-fit: cover !important;
+    }
+  }
+}
+
+.three-d-block-edit .remove-file-button {
+  background-color: #737373;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+
+.three-d-block-edit .remove-file-button:hover {
+  background-color: #254f73;
+}
+
+.three-d-block-edit .remove-file-button:focus {
+  outline: none;
+  box-shadow: #254f73;
 }
