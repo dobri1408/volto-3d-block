@@ -27,7 +27,7 @@ const applyConfig = (config) => {
   config.blocks.blocksConfig['3d_block'] = {
     ...config.blocks.blocksConfig['3d_block'],
     id: '3d_block',
-    title: '3D block',
+    title: '3D File Block',
     icon: videoSVG,
     group: 'media',
     view: View,
