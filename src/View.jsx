@@ -73,7 +73,7 @@ const View = (props) => {
     );
   } else if (['jpg', 'jpeg', 'png'].includes(fileExtension) && blobUrl) {
     return (
-      <div style={{ width: '100%' }}>
+      <div>
         <ReactPannellum
           id="panorama"
           sceneId="firstScene"
