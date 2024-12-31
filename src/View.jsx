@@ -27,16 +27,20 @@ const STLViewer = ({ fileData }) => {
 const View = (props) => {
   const { file } = props?.data;
   const [blobUrl, setBlobUrl] = useState(null);
+  const [isLoading, setIsLoading] = useState(false); // Loading state
 
   useEffect(() => {
     if (file?.data) {
+      setIsLoading(true); // Start loading
       const blob = new Blob([Buffer.from(file.data, 'base64')], {
         type: file['content-type'],
       });
-      setBlobUrl(URL.createObjectURL(blob));
+      const url = URL.createObjectURL(blob);
+      setBlobUrl(url);
+      setIsLoading(false); // Finish loading
 
       return () => {
-        URL.revokeObjectURL(blobUrl);
+        URL.revokeObjectURL(url);
       };
     }
   }, [file]);
@@ -71,9 +75,14 @@ const View = (props) => {
         </Suspense>
       </Canvas>
     );
-  } else if (['jpg', 'jpeg', 'png'].includes(fileExtension) && blobUrl) {
+  } else if (['jpg', 'jpeg', 'png'].includes(fileExtension)) {
+    // Show loading message while blobUrl is being created
+    if (isLoading || !blobUrl) {
+      return <p>Loading 3D file...</p>;
+    }
+
     return (
-      <div style={{ width: '100%' }}>
+      <div className="container360image">
         <ReactPannellum
           id="panorama"
           sceneId="firstScene"

@@ -1,10 +1,10 @@
-import AttachedFileWidget from '@eeacms/volto-object-widget/Widget/AttachedFileWidget';
 import loadable from '@loadable/component';
 import { SidebarPortal } from '@plone/volto/components';
 import { defineMessages, useIntl } from 'react-intl';
 
 import { BlockDataForm } from '@plone/volto/components';
 import schema from './schema';
+
 const ThreeDViewer = loadable(() => import('./View'));
 
 const messages = defineMessages({
