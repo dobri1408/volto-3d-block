@@ -44,13 +44,6 @@ const ThreeDBlockEdit = (props) => {
       {data?.file ? (
         <div className="three-d-preview">
           <ThreeDViewer data={{ file: data.file }} />
-          <button
-            type="button"
-            onClick={() => handleFileChange(null)}
-            className="remove-file-button"
-          >
-            Remove File
-          </button>
         </div>
       ) : (
         <>

@@ -1,19 +1,40 @@
 import React, { Suspense, useState, useEffect } from 'react';
-import { Canvas } from '@react-three/fiber';
-import { OrbitControls, useGLTF } from '@react-three/drei';
+import { Canvas, useThree } from '@react-three/fiber';
+import { OrbitControls } from '@react-three/drei';
 import { STLLoader } from 'three-stdlib';
-
+import * as THREE from 'three';
 import ReactPannellum from 'react-pannellum';
 
 const STLViewer = ({ fileData }) => {
   const [geometry, setGeometry] = useState(null);
+  const { camera, controls } = useThree();
 
   useEffect(() => {
     const loader = new STLLoader();
     loader.load(fileData, (loadedGeometry) => {
       setGeometry(loadedGeometry);
+
+      // Calculează bounding box-ul
+      const box = new THREE.Box3().setFromObject(
+        new THREE.Mesh(loadedGeometry),
+      );
+      const center = box.getCenter(new THREE.Vector3());
+      const size = box.getSize(new THREE.Vector3());
+
+      // Ajustează camera să fie centrată pe obiect
+      const maxDim = Math.max(size.x, size.y, size.z);
+      const fov = camera.fov * (Math.PI / 180);
+      const distance = maxDim / (2 * Math.tan(fov / 2));
+
+      camera.position.set(center.x, center.y, center.z + distance * 1.5);
+      camera.lookAt(center);
+
+      if (controls) {
+        controls.target.copy(center);
+        controls.update();
+      }
     });
-  }, [fileData]);
+  }, [fileData, camera, controls]);
 
   if (!geometry) return null;
 
@@ -27,17 +48,17 @@ const STLViewer = ({ fileData }) => {
 const View = (props) => {
   const { file } = props?.data;
   const [blobUrl, setBlobUrl] = useState(null);
-  const [isLoading, setIsLoading] = useState(false); // Loading state
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     if (file?.data) {
-      setIsLoading(true); // Start loading
+      setIsLoading(true);
       const blob = new Blob([Buffer.from(file.data, 'base64')], {
         type: file['content-type'],
       });
       const url = URL.createObjectURL(blob);
       setBlobUrl(url);
-      setIsLoading(false); // Finish loading
+      setIsLoading(false);
 
       return () => {
         URL.revokeObjectURL(url);
@@ -54,29 +75,31 @@ const View = (props) => {
 
   if (fileExtension === 'stl') {
     return (
-      <Canvas
-        camera={{ position: [0, 0, -100], fov: 50 }}
-        style={{ width: '100%' }}
-        onCreated={({ gl }) => {
-          gl.setSize(window.innerWidth, window.innerHeight);
-          gl.forceContextRestore();
-        }}
-      >
-        <Suspense fallback={<p>Loading...</p>}>
-          <ambientLight intensity={0.5} />
-          <directionalLight position={[1, 1, 1]} intensity={0.7} />
-          <STLViewer fileData={fileData} />
-          <OrbitControls
-            enableDamping
-            dampingFactor={0.1}
-            rotateSpeed={0.1}
-            zoomSpeed={0.1}
-          />
-        </Suspense>
-      </Canvas>
+      <div className="container360image">
+        <Canvas
+          camera={{ fov: 50 }}
+          flat
+          style={{ maxWidth: '100%', height: '500px' }}
+          onCreated={({ gl }) => {
+            gl.setSize(window.innerWidth, window.innerHeight);
+            gl.forceContextRestore();
+          }}
+        >
+          <Suspense fallback={<p>Loading...</p>}>
+            <ambientLight intensity={0.5} />
+            <directionalLight position={[1, 1, 1]} intensity={0.7} />
+            <STLViewer fileData={fileData} />
+            <OrbitControls
+              enableDamping
+              dampingFactor={0.1}
+              rotateSpeed={0.1}
+              zoomSpeed={0.1}
+            />
+          </Suspense>
+        </Canvas>
+      </div>
     );
   } else if (['jpg', 'jpeg', 'png'].includes(fileExtension)) {
-    // Show loading message while blobUrl is being created
     if (isLoading || !blobUrl) {
       return <p>Loading 3D file...</p>;
     }
