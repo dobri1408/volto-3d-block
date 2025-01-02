@@ -1,7 +1,6 @@
 import loadable from '@loadable/component';
 import { SidebarPortal } from '@plone/volto/components';
 import { defineMessages, useIntl } from 'react-intl';
-
 import { BlockDataForm } from '@plone/volto/components';
 import schema from './schema';
 
@@ -17,10 +16,12 @@ const messages = defineMessages({
 const ThreeDBlockEdit = (props) => {
   const { data, onChangeBlock, block, selected } = props;
   const intl = useIntl();
-  const handleFileChange = (file) => {
+
+  const handleCameraChange = (cameraData) => {
+    console.log('intru');
     onChangeBlock(block, {
       ...data,
-      file: file, // File UID or path
+      savedCameraPosition: cameraData,
     });
   };
 
@@ -43,11 +44,18 @@ const ThreeDBlockEdit = (props) => {
       </SidebarPortal>
       {data?.file ? (
         <div className="three-d-preview">
-          <ThreeDViewer data={{ file: data.file }} />
+          <ThreeDViewer
+            data={{
+              isEditMode: true,
+              savedCameraPosition: data.savedCameraPosition,
+              onCameraChange: handleCameraChange,
+              file: data.file,
+            }}
+          />
         </div>
       ) : (
         <>
-          <p>Please select a 3d file</p>
+          <p>Please select a 3D file</p>
         </>
       )}
     </div>

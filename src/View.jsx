@@ -1,52 +1,93 @@
 import React, { Suspense, useState, useEffect } from 'react';
 import { Canvas, useThree } from '@react-three/fiber';
-import { OrbitControls } from '@react-three/drei';
+import { OrbitControls as DreiOrbitControls } from '@react-three/drei';
 import { STLLoader } from 'three-stdlib';
 import * as THREE from 'three';
-import ReactPannellum from 'react-pannellum';
+import debounce from 'lodash.debounce';
 
-const STLViewer = ({ fileData }) => {
+const STLViewer = ({
+  fileData,
+  onCameraChange,
+  savedCameraPosition,
+  isEditMode,
+}) => {
   const [geometry, setGeometry] = useState(null);
-  const { camera, controls } = useThree();
+  const { camera, gl } = useThree();
 
   useEffect(() => {
     const loader = new STLLoader();
     loader.load(fileData, (loadedGeometry) => {
       setGeometry(loadedGeometry);
 
-      // Calculează bounding box-ul
-      const box = new THREE.Box3().setFromObject(
-        new THREE.Mesh(loadedGeometry),
-      );
-      const center = box.getCenter(new THREE.Vector3());
-      const size = box.getSize(new THREE.Vector3());
+      if (!savedCameraPosition) {
+        // Calculează poziția inițială a camerei
+        const box = new THREE.Box3().setFromObject(
+          new THREE.Mesh(loadedGeometry),
+        );
+        const center = box.getCenter(new THREE.Vector3());
+        const size = box.getSize(new THREE.Vector3());
 
-      // Ajustează camera să fie centrată pe obiect
-      const maxDim = Math.max(size.x, size.y, size.z);
-      const fov = camera.fov * (Math.PI / 180);
-      const distance = maxDim / (2 * Math.tan(fov / 2));
+        const maxDim = Math.max(size.x, size.y, size.z);
+        const fov = camera.fov * (Math.PI / 180);
+        const distance = maxDim / (2 * Math.tan(fov / 2));
 
-      camera.position.set(center.x, center.y, center.z + distance * 1.5);
-      camera.lookAt(center);
-
-      if (controls) {
-        controls.target.copy(center);
-        controls.update();
+        camera.position.set(center.x, center.y, center.z + distance * 1.5);
+        camera.lookAt(center);
+      } else {
+        // Setează camera la poziția salvată
+        const { position, target } = savedCameraPosition;
+        camera.position.set(position.x, position.y, position.z);
+        camera.lookAt(new THREE.Vector3(target.x, target.y, target.z));
       }
     });
-  }, [fileData, camera, controls]);
+  }, [fileData, savedCameraPosition, camera]);
+
+  // Debouncer pentru salvarea poziției camerei
+  const debouncedCameraSave = debounce((cameraPosition, target) => {
+    if (onCameraChange) {
+      onCameraChange({
+        position: {
+          x: cameraPosition.x,
+          y: cameraPosition.y,
+          z: cameraPosition.z,
+        },
+        target: { x: target.x, y: target.y, z: target.z },
+      });
+    }
+  }, 300);
 
   if (!geometry) return null;
 
   return (
-    <mesh geometry={geometry}>
-      <meshStandardMaterial color={0x808080} />
-    </mesh>
+    <>
+      <DreiOrbitControls
+        args={[camera, gl.domElement]}
+        target={
+          savedCameraPosition
+            ? new THREE.Vector3(
+                savedCameraPosition.target.x,
+                savedCameraPosition.target.y,
+                savedCameraPosition.target.z,
+              )
+            : undefined
+        }
+        onChange={(e) => {
+          if (isEditMode) {
+            const { position } = e.target.object;
+            const target = e.target.target;
+            debouncedCameraSave(position, target);
+          }
+        }}
+      />
+      <mesh geometry={geometry}>
+        <meshStandardMaterial color={0x808080} />
+      </mesh>
+    </>
   );
 };
 
 const View = (props) => {
-  const { file } = props?.data;
+  const { file, savedCameraPosition, onCameraChange, isEditMode } = props?.data;
   const [blobUrl, setBlobUrl] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -77,9 +118,11 @@ const View = (props) => {
     return (
       <div className="container360image">
         <Canvas
-          camera={{ fov: 50 }}
+          camera={{ position: [0, 0, -100], fov: 50 }}
           flat
-          style={{ maxWidth: '100%', height: '500px' }}
+          max-width={'100%'}
+          height="auto"
+          linear
           onCreated={({ gl }) => {
             gl.setSize(window.innerWidth, window.innerHeight);
             gl.forceContextRestore();
@@ -88,12 +131,11 @@ const View = (props) => {
           <Suspense fallback={<p>Loading...</p>}>
             <ambientLight intensity={0.5} />
             <directionalLight position={[1, 1, 1]} intensity={0.7} />
-            <STLViewer fileData={fileData} />
-            <OrbitControls
-              enableDamping
-              dampingFactor={0.1}
-              rotateSpeed={0.1}
-              zoomSpeed={0.1}
+            <STLViewer
+              fileData={fileData}
+              onCameraChange={onCameraChange}
+              savedCameraPosition={savedCameraPosition}
+              isEditMode={isEditMode}
             />
           </Suspense>
         </Canvas>
