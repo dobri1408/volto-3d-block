@@ -18,7 +18,6 @@ const ThreeDBlockEdit = (props) => {
   const intl = useIntl();
 
   const handleCameraChange = (cameraData) => {
-    console.log('intru');
     onChangeBlock(block, {
       ...data,
       savedCameraPosition: cameraData,

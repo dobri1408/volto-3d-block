@@ -4,7 +4,7 @@ import { OrbitControls as DreiOrbitControls } from '@react-three/drei';
 import { STLLoader } from 'three-stdlib';
 import * as THREE from 'three';
 import debounce from 'lodash.debounce';
-
+import ReactPannellum from 'react-pannellum';
 const STLViewer = ({
   fileData,
   onCameraChange,
