@@ -1,10 +1,11 @@
-import React, { Suspense, useState, useEffect } from 'react';
+import React, { Suspense, useState, useEffect, useRef } from 'react';
 import { Canvas, useThree } from '@react-three/fiber';
 import { OrbitControls as DreiOrbitControls } from '@react-three/drei';
 import { STLLoader } from 'three-stdlib';
 import * as THREE from 'three';
 import debounce from 'lodash.debounce';
 import ReactPannellum from 'react-pannellum';
+
 const STLViewer = ({
   fileData,
   onCameraChange,
@@ -20,7 +21,6 @@ const STLViewer = ({
       setGeometry(loadedGeometry);
 
       if (!savedCameraPosition) {
-        // Calculează poziția inițială a camerei
         const box = new THREE.Box3().setFromObject(
           new THREE.Mesh(loadedGeometry),
         );
@@ -34,7 +34,6 @@ const STLViewer = ({
         camera.position.set(center.x, center.y, center.z + distance * 1.5);
         camera.lookAt(center);
       } else {
-        // Setează camera la poziția salvată
         const { position, target } = savedCameraPosition;
         camera.position.set(position.x, position.y, position.z);
         camera.lookAt(new THREE.Vector3(target.x, target.y, target.z));
@@ -42,7 +41,6 @@ const STLViewer = ({
     });
   }, [fileData, savedCameraPosition, camera]);
 
-  // Debouncer pentru salvarea poziției camerei
   const debouncedCameraSave = debounce((cameraPosition, target) => {
     if (onCameraChange) {
       onCameraChange({
@@ -65,9 +63,9 @@ const STLViewer = ({
         target={
           savedCameraPosition
             ? new THREE.Vector3(
-                savedCameraPosition.target.x,
-                savedCameraPosition.target.y,
-                savedCameraPosition.target.z,
+                savedCameraPosition?.target?.x,
+                savedCameraPosition?.target?.y,
+                savedCameraPosition?.target?.z,
               )
             : undefined
         }
@@ -90,6 +88,7 @@ const View = (props) => {
   const { file, savedCameraPosition, onCameraChange, isEditMode } = props?.data;
   const [blobUrl, setBlobUrl] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const pannellumRef = useRef(null);
 
   useEffect(() => {
     if (file?.data) {
@@ -106,6 +105,19 @@ const View = (props) => {
       };
     }
   }, [file]);
+
+  const saveCameraPosition = debounce(() => {
+    if (pannellumRef.current) {
+      const viewer = ReactPannellum.getViewer('panorama');
+      if (viewer) {
+        const yaw = viewer.getYaw();
+        const pitch = viewer.getPitch();
+        const hfov = viewer.getHfov();
+
+        onCameraChange({ yaw, pitch, hfov });
+      }
+    }
+  }, 300);
 
   if (!file || !file.filename || !file.data) {
     return <p>No file provided.</p>;
@@ -147,12 +159,18 @@ const View = (props) => {
     }
 
     return (
-      <div className="container360image">
+      <div className="container360image" onMouseMove={saveCameraPosition}>
         <ReactPannellum
+          ref={pannellumRef}
           id="panorama"
           sceneId="firstScene"
           imageSource={blobUrl}
-          config={{ autoLoad: true, pitch: 10, yaw: 180, hfov: 110 }}
+          config={{
+            autoLoad: true,
+            pitch: savedCameraPosition?.pitch || 10,
+            yaw: savedCameraPosition?.yaw || 180,
+            hfov: savedCameraPosition?.hfov || 110,
+          }}
         />
       </div>
     );
