@@ -1,113 +1,112 @@
-# volto-nextcloud-video-block
+# Volto 3D Addon
 
-[![Releases](https://img.shields.io/github/v/release/eea/volto-nextcloud-video-block)](https://github.com/eea/volto-nextcloud-video-block/releases)
-
-[![Pipeline](https://ci.eionet.europa.eu/buildStatus/icon?job=volto-addons%2Fvolto-nextcloud-video-block%2Fmaster&subject=master)](https://ci.eionet.europa.eu/view/Github/job/volto-addons/job/volto-nextcloud-video-block/job/master/display/redirect)
-[![Lines of Code](https://sonarqube.eea.europa.eu/api/project_badges/measure?project=volto-nextcloud-video-block-master&metric=ncloc)](https://sonarqube.eea.europa.eu/dashboard?id=volto-nextcloud-video-block-master)
-[![Coverage](https://sonarqube.eea.europa.eu/api/project_badges/measure?project=volto-nextcloud-video-block-master&metric=coverage)](https://sonarqube.eea.europa.eu/dashboard?id=volto-nextcloud-video-block-master)
-[![Bugs](https://sonarqube.eea.europa.eu/api/project_badges/measure?project=volto-nextcloud-video-block-master&metric=bugs)](https://sonarqube.eea.europa.eu/dashboard?id=volto-nextcloud-video-block-master)
-[![Duplicated Lines (%)](https://sonarqube.eea.europa.eu/api/project_badges/measure?project=volto-nextcloud-video-block-master&metric=duplicated_lines_density)](https://sonarqube.eea.europa.eu/dashboard?id=volto-nextcloud-video-block-master)
-
-[![Pipeline](https://ci.eionet.europa.eu/buildStatus/icon?job=volto-addons%2Fvolto-nextcloud-video-block%2Fdevelop&subject=develop)](https://ci.eionet.europa.eu/view/Github/job/volto-addons/job/volto-nextcloud-video-block/job/develop/display/redirect)
-[![Lines of Code](https://sonarqube.eea.europa.eu/api/project_badges/measure?project=volto-nextcloud-video-block-develop&metric=ncloc)](https://sonarqube.eea.europa.eu/dashboard?id=volto-nextcloud-video-block-develop)
-[![Coverage](https://sonarqube.eea.europa.eu/api/project_badges/measure?project=volto-nextcloud-video-block-develop&metric=coverage)](https://sonarqube.eea.europa.eu/dashboard?id=volto-nextcloud-video-block-develop)
-[![Bugs](https://sonarqube.eea.europa.eu/api/project_badges/measure?project=volto-nextcloud-video-block-develop&metric=bugs)](https://sonarqube.eea.europa.eu/dashboard?id=volto-nextcloud-video-block-develop)
-[![Duplicated Lines (%)](https://sonarqube.eea.europa.eu/api/project_badges/measure?project=volto-nextcloud-video-block-develop&metric=duplicated_lines_density)](https://sonarqube.eea.europa.eu/dashboard?id=volto-nextcloud-video-block-develop)
-
-
-[Volto](https://github.com/plone/volto) add-on: NextCloud Video Block
+The **Volto 3D Addon** is a powerful extension for Volto, designed to integrate 3D objects (e.g., STL files) and 360° photos into pages. This addon makes 3D content accessible and interactive for users by providing a dedicated block and rendering capabilities.
 
 ## Features
 
-This add-on only allows playback from Nextcloud videos, from a selection of allowed domains.
-![Nextcloud](https://raw.githubusercontent.com/eea/volto-nextcloud-video-block/master/docs/Nextcloud-video.gif)
+- **STL File Upload:**
+  - Users can upload STL files directly to Volto.
 
-Add `whitelist`` in **index.js**:
+- **3D Object Block:**
+  - A new Volto block specifically for inserting 3D objects into pages.
+  - Supports rendering of STL files.
 
-```JSON
+- **Rendering Engine Integration:**
+  - Includes a suitable rendering engine for displaying STL files.
+  - Ensures consistency with other file views available in Volto.
 
-const applyConfig = (config) => {
-   config.blocks.blocksConfig.nextCloudVideo = {
-   ....
-      whiteList: [
-         'https://cmshare.eea.europa.eu',
-         'https://shareit.eea.europa.eu',
-      ],
-   ....
-   };
+- **Customization Options:**
+  - Allows customization of the 3D object display in terms of rotation and size.
+  - Default zoom level ensures objects are both fully visible and easily recognizable (e.g., min. 50%, max. 100%).
 
-   return config;
-};
+- **360° Image Support:**
+  - Preliminary evaluation for supporting 360° images using H5P.
 
+## Installation
+
+To install the addon, run the following command in your Volto project directory:
+
+```bash
+npm install volto-3d-addon
 ```
 
-## Getting started
+After installation, update your `addons` configuration in `config.js`:
 
-### Try volto-nextcloud-video-block with Docker
+```javascript
+const config = {
+  ...,
+  addons: [
+    ...,
+    'volto-3d-addon',
+  ],
+};
 
-      git clone https://github.com/eea/volto-nextcloud-video-block.git
-      cd volto-nextcloud-video-block
-      make
-      make start
+export default config;
+```
 
-Go to http://localhost:3000
+## Usage
 
-### Add volto-nextcloud-video-block to your Volto project
+1. **Upload STL Files:**
+   - Navigate to the content management interface.
+   - Upload STL files as you would any other file type.
 
-1. Make sure you have a [Plone backend](https://plone.org/download) up-and-running at http://localhost:8080/Plone
+2. **Add 3D Object Block:**
+   - Edit a page in Volto.
+   - Add the "3D Object" block from the block selector menu.
+   - Select an uploaded STL file to display.
 
-   ```Bash
-   docker compose up backend
+3. **Customize Display:**
+   - Adjust rotation and size directly within the block editor.
+   - View the object with a default zoom level for optimal recognition.
+
+## Development
+
+### Requirements
+- Node.js (LTS version recommended)
+- Volto project setup
+
+### Running Locally
+1. Clone this repository:
+   ```bash
+   git clone https://github.com/your-organization/volto-3d-addon.git
+   ```
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+3. Start the development server:
+   ```bash
+   npm start
+   ```
+4. Link the addon to your Volto project:
+   ```bash
+   cd ../your-volto-project
+   npm link ../volto-3d-addon
+   npm start
    ```
 
-1. Start Volto frontend
+### Testing
+Run tests to ensure everything works as expected:
 
-* If you already have a volto project, just update `package.json`:
+```bash
+npm test
+```
 
-   ```JSON
-   "addons": [
-       "@eeacms/volto-nextcloud-video-block"
-   ],
+## Roadmap
 
-   "dependencies": {
-       "@eeacms/volto-nextcloud-video-block": "*"
-   }
-   ```
+- Improve rendering performance for larger STL files.
+- Expand support for additional 3D file formats.
+- Finalize integration with H5P for 360° image support.
 
-* If not, create one:
+## Contributing
 
-   ```
-   npm install -g yo @plone/generator-volto
-   yo @plone/volto my-volto-project --canary --addon @eeacms/volto-nextcloud-video-block
-   cd my-volto-project
-   ```
+We welcome contributions! Please follow these steps:
 
-1. Install new add-ons and restart Volto:
+1. Fork the repository.
+2. Create a feature branch.
+3. Commit your changes.
+4. Submit a pull request.
 
-   ```
-   yarn
-   yarn start
-   ```
+## License
 
-1. Go to http://localhost:3000
-
-1. Happy editing!
-
-## Release
-
-See [RELEASE.md](https://github.com/eea/volto-nextcloud-video-block/blob/master/RELEASE.md).
-
-## How to contribute
-
-See [DEVELOP.md](https://github.com/eea/volto-nextcloud-video-block/blob/master/DEVELOP.md).
-
-## Copyright and license
-
-The Initial Owner of the Original Code is European Environment Agency (EEA).
-All Rights Reserved.
-
-See [LICENSE.md](https://github.com/eea/volto-nextcloud-video-block/blob/master/LICENSE.md) for details.
-
-## Funding
-
-[European Environment Agency (EU)](http://eea.europa.eu)
+This project is licensed under the MIT License. See the LICENSE file for details.
