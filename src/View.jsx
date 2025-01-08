@@ -5,7 +5,7 @@ import { STLLoader } from 'three-stdlib';
 import * as THREE from 'three';
 import debounce from 'lodash.debounce';
 import ReactPannellum from 'react-pannellum';
-
+import { OrbitControls } from '@react-three/drei';
 const STLViewer = ({
   fileData,
   onCameraChange,
@@ -14,25 +14,32 @@ const STLViewer = ({
 }) => {
   const [geometry, setGeometry] = useState(null);
   const { camera, gl } = useThree();
+  const geometryRef = useRef(null);
 
   useEffect(() => {
+    if (!fileData || geometryRef.current) return; // Previne reîncărcarea inutilă
+
     const loader = new STLLoader();
     loader.load(fileData, (loadedGeometry) => {
+      loadedGeometry.center(); // Centrează geometria
+      geometryRef.current = loadedGeometry; // Păstrează geometria încărcată
       setGeometry(loadedGeometry);
 
+      // Calculează dimensiunile și ajustează camera
+      const box = new THREE.Box3().setFromObject(
+        new THREE.Mesh(loadedGeometry),
+      );
+      const size = box.getSize(new THREE.Vector3());
+      const maxDim = Math.max(size.x, size.y, size.z);
+      const fov = camera.fov * (Math.PI / 180);
+      const distance = maxDim / (2 * Math.tan(fov / 2));
+
       if (!savedCameraPosition) {
-        const box = new THREE.Box3().setFromObject(
-          new THREE.Mesh(loadedGeometry),
-        );
-        const center = box.getCenter(new THREE.Vector3());
-        const size = box.getSize(new THREE.Vector3());
-
-        const maxDim = Math.max(size.x, size.y, size.z);
-        const fov = camera.fov * (Math.PI / 180);
-        const distance = maxDim / (2 * Math.tan(fov / 2));
-
-        camera.position.set(center.x, center.y, center.z + distance * 1.5);
-        camera.lookAt(center);
+        camera.position.set(0, 0, distance * 2);
+        camera.near = distance / 10;
+        camera.far = distance * 10;
+        camera.updateProjectionMatrix();
+        camera.lookAt(new THREE.Vector3(0, 0, 0));
       } else {
         const { position, target } = savedCameraPosition;
         camera.position.set(position.x, position.y, position.z);
@@ -41,39 +48,21 @@ const STLViewer = ({
     });
   }, [fileData, savedCameraPosition, camera]);
 
-  const debouncedCameraSave = debounce((cameraPosition, target) => {
-    if (onCameraChange) {
-      onCameraChange({
-        position: {
-          x: cameraPosition.x,
-          y: cameraPosition.y,
-          z: cameraPosition.z,
-        },
-        target: { x: target.x, y: target.y, z: target.z },
-      });
-    }
-  }, 300);
-
   if (!geometry) return null;
 
   return (
     <>
-      <DreiOrbitControls
+      <OrbitControls
         args={[camera, gl.domElement]}
-        target={
-          savedCameraPosition
-            ? new THREE.Vector3(
-                savedCameraPosition?.target?.x,
-                savedCameraPosition?.target?.y,
-                savedCameraPosition?.target?.z,
-              )
-            : undefined
-        }
+        target={new THREE.Vector3(0, 0, 0)}
         onChange={(e) => {
-          if (isEditMode) {
+          if (isEditMode && onCameraChange) {
             const { position } = e.target.object;
             const target = e.target.target;
-            debouncedCameraSave(position, target);
+            onCameraChange({
+              position: { x: position.x, y: position.y, z: position.z },
+              target: { x: target.x, y: target.y, z: target.z },
+            });
           }
         }}
       />
@@ -113,8 +102,7 @@ const View = (props) => {
         const yaw = viewer.getYaw();
         const pitch = viewer.getPitch();
         const hfov = viewer.getHfov();
-
-        onCameraChange({ yaw, pitch, hfov });
+        if (onCameraChange) onCameraChange({ yaw, pitch, hfov });
       }
     }
   }, 300);
