@@ -17,15 +17,14 @@ const STLViewer = ({
   const geometryRef = useRef(null);
 
   useEffect(() => {
-    if (!fileData || geometryRef.current) return; // Previne reîncărcarea inutilă
+    if (!fileData || geometryRef.current) return;
 
     const loader = new STLLoader();
     loader.load(fileData, (loadedGeometry) => {
-      loadedGeometry.center(); // Centrează geometria
-      geometryRef.current = loadedGeometry; // Păstrează geometria încărcată
+      loadedGeometry.center();
+      geometryRef.current = loadedGeometry;
       setGeometry(loadedGeometry);
 
-      // Calculează dimensiunile și ajustează camera
       const box = new THREE.Box3().setFromObject(
         new THREE.Mesh(loadedGeometry),
       );
