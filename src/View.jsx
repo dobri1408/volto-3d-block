@@ -22,6 +22,7 @@ const STLViewer = ({
     const loader = new STLLoader();
     loader.load(fileData, (loadedGeometry) => {
       loadedGeometry.center();
+      loadedGeometry.computeBoundingSphere();
       geometryRef.current = loadedGeometry;
       setGeometry(loadedGeometry);
 
@@ -54,7 +55,9 @@ const STLViewer = ({
       <OrbitControls
         args={[camera, gl.domElement]}
         target={new THREE.Vector3(0, 0, 0)}
-        onChange={(e) => {
+        enableDamping={true}
+        dampingFactor={0.2}
+        onEnd={(e) => {
           if (isEditMode && onCameraChange) {
             const { position } = e.target.object;
             const target = e.target.target;
@@ -65,8 +68,8 @@ const STLViewer = ({
           }
         }}
       />
-      <mesh geometry={geometry}>
-        <meshStandardMaterial color={0x808080} />
+      <mesh geometry={geometry} frustumCulled={false}>
+        <meshStandardMaterial attach="material" color={0x808080} />
       </mesh>
     </>
   );
